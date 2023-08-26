@@ -126,36 +126,36 @@ class EmbeddingTrainer:
                 torch.save(lr_scheduler.state_dict(), os.path.join(self.args.ckpt_dir, "scheduler{:d}.pt".format(epoch)))
 
 
-@torch.no_grad()
-def evaluate(self, eval_dataloader: DataLoader, epoch: int = 0) -> Dict[str, float]:
-    """Run evaluation, plot prediction and return metrics.
-
-    Args:
-        eval_dataset (Dataset): Evaluation dataloader
-        epoch (int, optional): Current epoch, used for naming figures. Defaults to 0.
-
-    Returns:
-        Dict[str, float]: Dictionary of prediction metrics
-    """
-    test_loss = 0
-    for mbidx, inputs in enumerate(eval_dataloader):
-        
-        loss, state_pred, state_target = self.model.evaluate(**inputs)
-        test_loss = test_loss + loss
-
-        if not self.viz is None and mbidx == 0:
-            self.viz.plotEmbeddingPrediction(state_pred, state_target, epoch=epoch)
-
-    # Generate a plot of test_loss against epoch number
-    if epoch > 0:
-        plt.figure()
-        plt.plot(range(1, epoch + 1), test_loss / len(eval_dataloader), marker='o')
-        plt.xlabel('Epoch')
-        plt.ylabel('Test Loss')
-        plt.title('Test Loss vs Epoch')
-        plt.grid()
-        plt.savefig(os.path.join(self.args.plot_dir, f'test_loss_vs_epoch.png'))
-        plt.close()
-
-    return {'test_error': test_loss / len(eval_dataloader)}
+    @torch.no_grad()
+    def evaluate(self, eval_dataloader: DataLoader, epoch: int = 0) -> Dict[str, float]:
+        """Run evaluation, plot prediction and return metrics.
+    
+        Args:
+            eval_dataset (Dataset): Evaluation dataloader
+            epoch (int, optional): Current epoch, used for naming figures. Defaults to 0.
+    
+        Returns:
+            Dict[str, float]: Dictionary of prediction metrics
+        """
+        test_loss = 0
+        for mbidx, inputs in enumerate(eval_dataloader):
+            
+            loss, state_pred, state_target = self.model.evaluate(**inputs)
+            test_loss = test_loss + loss
+    
+            if not self.viz is None and mbidx == 0:
+                self.viz.plotEmbeddingPrediction(state_pred, state_target, epoch=epoch)
+    
+        # Generate a plot of test_loss against epoch number
+        if epoch > 0:
+            plt.figure()
+            plt.plot(range(1, epoch + 1), test_loss / len(eval_dataloader), marker='o')
+            plt.xlabel('Epoch')
+            plt.ylabel('Test Loss')
+            plt.title('Test Loss vs Epoch')
+            plt.grid()
+            plt.savefig(os.path.join(self.args.plot_dir, f'test_loss_vs_epoch.png'))
+            plt.close()
+    
+        return {'test_error': test_loss / len(eval_dataloader)}
 
