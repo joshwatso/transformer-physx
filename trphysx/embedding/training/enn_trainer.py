@@ -160,5 +160,5 @@ class EmbeddingTrainer:
             #plt.savefig(os.path.join(self.args.plot_dir, f'test_loss_vs_epoch.png'))
             #plt.close()
     
-            return {'test_error': average_test_loss}
+            return {'test_error': test_loss/len(eval_dataloader)}
 
