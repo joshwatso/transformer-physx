@@ -12,6 +12,7 @@ import logging
 import torch
 import numpy as np
 import argparse
+import matplotlib.pyplot as plt
 
 from typing import Dict, Tuple
 from torch.utils.data import DataLoader
