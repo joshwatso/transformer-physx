@@ -145,4 +145,15 @@ class EmbeddingTrainer:
             if not self.viz is None and mbidx == 0:
                 self.viz.plotEmbeddingPrediction(state_pred, state_target, epoch=epoch)
 
+                    # Generate a plot of test_loss against epoch number
+        if epoch > 0:
+            plt.figure()
+            plt.plot(range(1, epoch + 1), test_loss / len(eval_dataloader), marker='o')
+            plt.xlabel('Epoch')
+            plt.ylabel('Test Loss')
+            plt.title('Test Loss vs Epoch')
+            plt.grid()
+            plt.savefig(os.path.join(self.args.plot_dir, f'test_loss_vs_epoch.png'))
+            plt.close()
+
             return {'test_error': test_loss/len(eval_dataloader)}
