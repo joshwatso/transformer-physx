@@ -396,8 +396,8 @@ class Trainer:
                 # Dont plot if exceed max plot limit
                 if plot_id < self.args.plot_max:
                     self.viz.plotPrediction(
-                        out[i], 
-                        states[i],
+                        out[i], # out[i, 180:360]
+                        states[i], # states[i, 180:360]
                         self.args.plot_dir, 
                         epoch=epoch, 
                         pid=plot_id )
