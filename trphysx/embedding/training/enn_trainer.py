@@ -138,19 +138,21 @@ class EmbeddingTrainer:
             Dict[str, float]: Dictionary of prediction metrics
         """
         test_loss = 0
+        num_batches = len(eval_dataloader)
+        
         for mbidx, inputs in enumerate(eval_dataloader):
-            
             loss, state_pred, state_target = self.model.evaluate(**inputs)
-            test_loss = test_loss + loss
+            test_loss += loss.item()
     
             if not self.viz is None and mbidx == 0:
                 self.viz.plotEmbeddingPrediction(state_pred, state_target, epoch=epoch)
     
+        average_test_loss = test_loss / num_batches
+    
         # Generate a plot of test_loss against epoch number
         if epoch > 0:
             plt.figure()
-            test_loss_cpu = test_loss.cpu()  # Move to CPU
-            plt.plot(range(1, epoch + 1), test_loss_cpu / len(eval_dataloader), marker='o')
+            plt.plot(range(1, epoch + 1), average_test_loss, marker='o')
             plt.xlabel('Epoch')
             plt.ylabel('Test Loss')
             plt.title('Test Loss vs Epoch')
@@ -158,5 +160,5 @@ class EmbeddingTrainer:
             plt.savefig(os.path.join(self.args.plot_dir, f'test_loss_vs_epoch.png'))
             plt.close()
     
-        return {'test_error': test_loss / len(eval_dataloader)}
+        return {'test_error': average_test_loss}
 
