@@ -128,10 +128,10 @@ class EmbeddingTrainer:
 
     @torch.no_grad()
     def evaluate(self, eval_dataloader: DataLoader, epoch: int = 0) -> Dict[str, float]:
-        """Run evaluation, plot prediction and return metrics.
+        """Run evaluation, plot prediction, and return metrics.
     
         Args:
-            eval_dataset (Dataset): Evaluation dataloader
+            eval_dataloader (DataLoader): Evaluation dataloader
             epoch (int, optional): Current epoch, used for naming figures. Defaults to 0.
     
         Returns:
@@ -149,7 +149,8 @@ class EmbeddingTrainer:
         # Generate a plot of test_loss against epoch number
         if epoch > 0:
             plt.figure()
-            plt.plot(range(1, epoch + 1), test_loss / len(eval_dataloader), marker='o')
+            test_loss_cpu = test_loss.cpu()  # Move to CPU
+            plt.plot(range(1, epoch + 1), test_loss_cpu / len(eval_dataloader), marker='o')
             plt.xlabel('Epoch')
             plt.ylabel('Test Loss')
             plt.title('Test Loss vs Epoch')
