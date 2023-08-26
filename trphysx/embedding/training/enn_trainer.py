@@ -141,7 +141,7 @@ class EmbeddingTrainer:
         for mbidx, inputs in enumerate(eval_dataloader):
             
             loss, state_pred, state_target = self.model.evaluate(**inputs)
-            test_loss = test_loss + loss
+            test_loss = test_loss + loss.cpu().item()  # Move to CPU and convert to Python scalar
 
             if not self.viz is None and mbidx == 0:
                 self.viz.plotEmbeddingPrediction(state_pred, state_target, epoch=epoch)
