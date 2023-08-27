@@ -149,7 +149,6 @@ class EmbeddingTrainer:
                 
             return {'test_error': test_loss/len(eval_dataloader)}
     
-        %matplotlib inline
         
         #epoch = 100
         #test_error = np.random.rand(epoch)
