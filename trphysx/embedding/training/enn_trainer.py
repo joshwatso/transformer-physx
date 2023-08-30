@@ -145,15 +145,6 @@ class EmbeddingTrainer:
         
         plt.figure()  # Create a new figure
         
-        for epochs, error in enumerate(loss_total):
-            plt.plot(epochs, error, marker='o', color='blue')
-        
-        plt.xlabel('Epoch')
-        plt.ylabel('Error Value')
-        plt.title('Error Plot Over Epochs')
-        plt.legend()
-        
-        plt.show()
         
         for mbidx, inputs in enumerate(eval_dataloader):
             loss, state_pred, state_target = self.model.evaluate(**inputs)
@@ -166,6 +157,16 @@ class EmbeddingTrainer:
     
         
 
-    
+    def xy(loss_total, epochs) -> None:
+
+        for epochs, error in enumerate(loss_total):
+        plt.plot(epochs, error, marker='o', color='blue')
+        
+        plt.xlabel('Epoch')
+        plt.ylabel('Error Value')
+        plt.title('Error Plot Over Epochs')
+        plt.legend()
+        
+        plt.show()
             
 
