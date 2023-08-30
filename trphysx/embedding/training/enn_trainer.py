@@ -160,13 +160,13 @@ class EmbeddingTrainer:
     def xy(loss_total, epochs) -> None:
 
         for epochs, error in enumerate(loss_total):
-        plt.plot(epochs, error, marker='o', color='blue')
-        
-        plt.xlabel('Epoch')
-        plt.ylabel('Error Value')
-        plt.title('Error Plot Over Epochs')
-        plt.legend()
-        
-        plt.show()
+            plt.plot(epochs, error, marker='o', color='blue')
+            
+            plt.xlabel('Epoch')
+            plt.ylabel('Error Value')
+            plt.title('Error Plot Over Epochs')
+            plt.legend()
+            
+            plt.show()
             
 
