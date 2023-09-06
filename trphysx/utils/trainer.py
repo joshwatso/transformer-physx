@@ -163,15 +163,15 @@ class Trainer:
         """
         optimizer = self.optimizers[0]
         lr_scheduler = self.optimizers[1]
-
+    
         model = self.model
-
+    
         # Set up model parallelize if available
         # multi-gpu training
         if self.args.n_gpu > 1:
             logger.info('Using {:d} GPUs to train.'.format(self.args.n_gpu))
             model = torch.nn.DataParallel(model)
-
+    
         # Distributed training
         if self.args.local_rank != -1:
             model = torch.nn.parallel.DistributedDataParallel(
@@ -180,40 +180,44 @@ class Trainer:
                 output_device=self.args.local_rank,
                 find_unused_parameters=True,
             )
-
+    
+        # Initialize batch size variables
+        current_epoch = 0
+        new_batch_size = self.args.train_batch_size  # Initialize with the initial batch size
+    
         # Loop over epochs
-        training_loader = self.get_train_dataloader()
-        for epoch in range(self.args.epoch_start+1, self.args.epochs + 1):
+        training_loader = self.get_train_dataloader()  # Initialize with the initial batch size
+        for epoch in range(self.args.epoch_start + 1, self.args.epochs + 1):
             
             self.args.gradient_accumulation_steps = min([self.args.gradient_accumulation_steps, len(training_loader)])
             
             loss_total = 0.0
             model.zero_grad()
-            # Loop over mini-batched
+            # Loop over mini-batches
             for mbidx, inputs in enumerate(training_loader):
                 
-                loss0, _, _ =  self.training_step(model, inputs)
-
-                loss_total = loss_total + loss0/len(training_loader)
-
+                loss0, _, _ = self.training_step(model, inputs)
+    
+                loss_total = loss_total + loss0 / len(training_loader)
+    
                 # Optimize model
-                if (mbidx + 1) % self.args.gradient_accumulation_steps == 0 or mbidx == len(training_loader)-1:
+                if (mbidx + 1) % self.args.gradient_accumulation_steps == 0 or mbidx == len(training_loader) - 1:
                     torch.nn.utils.clip_grad_norm_(model.parameters(), self.args.max_grad_norm)
-
+    
                     optimizer.step()
                     lr_scheduler.step(epoch + float(mbidx) / len(training_loader))
                     model.zero_grad()
                     
                     self.epoch = epoch + (mbidx + 1.) / len(training_loader)
-
+    
             for param_group in optimizer.param_groups:
                 cur_lr = param_group['lr']
                 break
-
+    
             logger.info("Current Learning rate: {:.05f}".format(cur_lr))
             logger.info("Epoch {:d}: Training loss {:.05f}".format(epoch, loss_total))
             self.log_metrics.push(epoch=epoch, loss=loss_total)
-
+    
             # Evaluate model
             if(epoch % self.args.eval_steps == 0 or epoch == 1):
                 for param_group in optimizer.param_groups:
@@ -222,7 +226,7 @@ class Trainer:
                 logger.info("Current Learning rate: {:.05f}".format(cur_lr))
                 logger.info('Evaluating...')
                 self.evaluate(epoch=epoch)
-
+    
             # Checkpointing model
             if epoch % self.args.save_steps == 0 or epoch == 1:
                 # In all cases (even distributed/parallel), self.model is always a reference
@@ -238,6 +242,17 @@ class Trainer:
                 torch.save(lr_scheduler.state_dict(), os.path.join(self.args.ckpt_dir, "scheduler{:d}.pt".format(epoch)))
                 # Save log file
                 self.log_metrics.writeToHDF5()
+            
+            if epoch % 25 == 0:  # Check if the current epoch is a multiple of 25
+                current_epoch += 1  # Increment the current epoch counter
+                new_batch_size = self.args.train_batch_size * (2 ** current_epoch)  # Calculate the new batch size
+    
+                # Update the batch size for your data loader here
+                training_loader = self.get_train_dataloader(train_dataset, batch_size=new_batch_size)
+    
+                logger.info(f"Changing batch size to {new_batch_size} at epoch {epoch}")
+
+
 
 
 
