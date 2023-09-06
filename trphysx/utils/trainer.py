@@ -248,7 +248,7 @@ class Trainer:
                 new_batch_size = self.args.train_batch_size * (2 ** current_epoch)  # Calculate the new batch size
     
                 # Update the batch size for your data loader here
-                training_loader = self.get_train_dataloader(train_dataset, batch_size=new_batch_size)
+                training_loader = self.get_train_dataloader(train_datase=train_dataset, batch_size=new_batch_size)
     
                 logger.info(f"Changing batch size to {new_batch_size} at epoch {epoch}")
 
