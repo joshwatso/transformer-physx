@@ -182,42 +182,43 @@ class Trainer:
             )
     
         # Initialize batch size variables
+    
         current_epoch = 0
         new_batch_size = self.args.train_batch_size  # Initialize with the initial batch size
-    
+        
         # Loop over epochs
         training_loader = self.get_train_dataloader()  # Initialize with the initial batch size
         for epoch in range(self.args.epoch_start + 1, self.args.epochs + 1):
-            
+        
             self.args.gradient_accumulation_steps = min([self.args.gradient_accumulation_steps, len(training_loader)])
-            
+        
             loss_total = 0.0
             model.zero_grad()
             # Loop over mini-batches
             for mbidx, inputs in enumerate(training_loader):
-                
+        
                 loss0, _, _ = self.training_step(model, inputs)
-    
+        
                 loss_total = loss_total + loss0 / len(training_loader)
-    
+        
                 # Optimize model
                 if (mbidx + 1) % self.args.gradient_accumulation_steps == 0 or mbidx == len(training_loader) - 1:
                     torch.nn.utils.clip_grad_norm_(model.parameters(), self.args.max_grad_norm)
-    
+        
                     optimizer.step()
                     lr_scheduler.step(epoch + float(mbidx) / len(training_loader))
                     model.zero_grad()
-                    
+        
                     self.epoch = epoch + (mbidx + 1.) / len(training_loader)
-    
+        
             for param_group in optimizer.param_groups:
                 cur_lr = param_group['lr']
                 break
-    
+        
             logger.info("Current Learning rate: {:.05f}".format(cur_lr))
             logger.info("Epoch {:d}: Training loss {:.05f}".format(epoch, loss_total))
             self.log_metrics.push(epoch=epoch, loss=loss_total)
-    
+        
             # Evaluate model
             if(epoch % self.args.eval_steps == 0 or epoch == 1):
                 for param_group in optimizer.param_groups:
@@ -226,7 +227,7 @@ class Trainer:
                 logger.info("Current Learning rate: {:.05f}".format(cur_lr))
                 logger.info('Evaluating...')
                 self.evaluate(epoch=epoch)
-    
+        
             # Checkpointing model
             if epoch % self.args.save_steps == 0 or epoch == 1:
                 # In all cases (even distributed/parallel), self.model is always a reference
@@ -240,21 +241,19 @@ class Trainer:
                 self.model.save_model(self.args.ckpt_dir, epoch=epoch)
                 torch.save(optimizer.state_dict(), os.path.join(self.args.ckpt_dir, "optimizer{:d}.pt".format(epoch)))
                 torch.save(lr_scheduler.state_dict(), os.path.join(self.args.ckpt_dir, "scheduler{:d}.pt".format(epoch)))
-                # Save log file
-                self.log_metrics.writeToHDF5()
-            
-
+        
             if epoch % 25 == 0:  # Check if the current epoch is a multiple of 25
                 current_epoch += 1  # Increment the current epoch counter
                 new_batch_size = initial_batch_size * (2 ** current_epoch)  # Calculate the new batch size
-            
+        
                 # Update the batch size of the train_dataset directly
                 self.train_dataset.batch_size = new_batch_size
-            
+        
                 # Create a new data loader with the updated batch size
                 training_loader = self.get_train_dataloader()
-            
+        
             logger.info(f"Changing batch size to {new_batch_size} at epoch {epoch}")
+
 
 
 
