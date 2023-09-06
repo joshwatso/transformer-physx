@@ -253,6 +253,8 @@ class Trainer:
                 training_loader = self.get_train_dataloader()
             
                 logger.info(f"Changing batch size to {new_batch_size} at epoch {epoch}")
+            logger.info(f"Current batch size after update: {training_loader.batch_size}")
+
 
 
 
