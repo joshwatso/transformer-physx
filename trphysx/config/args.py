@@ -113,7 +113,7 @@ class TrainingArguments:
 
     # ===== Optimization parameters =====
     lr: float = field(
-        default=0.1, metadata={"help": "Learning rate"}
+        default=0.05, metadata={"help": "Learning rate"}
     )
     max_grad_norm: float = field(
         default=0.1, metadata={"help": "Norm limit for clipping gradients"}
