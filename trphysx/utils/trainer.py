@@ -244,7 +244,11 @@ class Trainer:
 
             if epoch % 25 == 0:
                 self.args.train_batch_size = self.args.train_batch_size * 2
+                logger.info(f"Changing batch size to {new_batch_size} at epoch {epoch}")
+                logger.info(f"Current batch size after update: {training_loader.batch_size}")
 
+
+    
             # if epoch % 25 == 0:  # Check if the current epoch is a multiple of 25
             #     current_epoch += 1  # Increment the current epoch counter
             #     new_batch_size = self.args.train_batch_size * (2 ** current_epoch)  # Calculate the new batch size
