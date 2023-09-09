@@ -184,7 +184,7 @@ class Trainer:
         # Initialize batch size variables
     
         #current_epoch = 0
-        #new_batch_size = self.args.train_batch_size  # Initialize with the initial batch size
+        # new_batch_size = self.args.train_batch_size  # Initialize with the initial batch size
         
         # Loop over epochs
         training_loader = self.get_train_dataloader()  # Initialize with the initial batch size
@@ -241,19 +241,22 @@ class Trainer:
                 self.model.save_model(self.args.ckpt_dir, epoch=epoch)
                 torch.save(optimizer.state_dict(), os.path.join(self.args.ckpt_dir, "optimizer{:d}.pt".format(epoch)))
                 torch.save(lr_scheduler.state_dict(), os.path.join(self.args.ckpt_dir, "scheduler{:d}.pt".format(epoch)))
-        
-            #if epoch % 25 == 0:  # Check if the current epoch is a multiple of 25
-                #current_epoch += 1  # Increment the current epoch counter
-                #new_batch_size = self.args.train_batch_size * (2 ** current_epoch)  # Calculate the new batch size
+
+            if epoch % 25 == 0:
+                self.args.train_batch_size = self.args.train_batch_size * 2
+
+            # if epoch % 25 == 0:  # Check if the current epoch is a multiple of 25
+            #     current_epoch += 1  # Increment the current epoch counter
+            #     new_batch_size = self.args.train_batch_size * (2 ** current_epoch)  # Calculate the new batch size
             
-                # Update the batch size of the train_dataset directly
-                #self.train_dataset.batch_size = new_batch_size
+            #     Update the batch size of the train_dataset directly
+            #     self.train_dataset.batch_size = new_batch_size
             
-                # Create a new data loader with the updated batch size
-                #training_loader = self.get_train_dataloader()
+            #     Create a new data loader with the updated batch size
+            #     training_loader = self.get_train_dataloader()
             
-                #logger.info(f"Changing batch size to {new_batch_size} at epoch {epoch}")
-                #logger.info(f"Current batch size after update: {training_loader.batch_size}")
+            #     logger.info(f"Changing batch size to {new_batch_size} at epoch {epoch}")
+            #     logger.info(f"Current batch size after update: {training_loader.batch_size}")
 
 
 
