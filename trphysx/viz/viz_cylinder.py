@@ -50,7 +50,7 @@ class CylinderViz(Viz):
         epoch: int = None,
         pid: int = 0,
         nsteps: int = 15,
-        stride: int = 28
+        stride: int = 21
     ) -> None:
         """Plots the predicted x-velocity, y-velocity and pressure field contours
 
