@@ -128,7 +128,7 @@ class CylinderViz(Viz):
         plot_dir: str = None,
         epoch: int = None,
         pid: int = 0,
-        nsteps: int = 10,
+        nsteps: int = 15,
         stride: int = 28
     ) -> None:
         """Plots vorticity contours of flow around a cylinder at several time-steps. Vorticity gradients
