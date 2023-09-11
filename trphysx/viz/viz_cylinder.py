@@ -49,8 +49,8 @@ class CylinderViz(Viz):
         plot_dir: str = None,
         epoch: int = None,
         pid: int = 0,
-        nsteps: int = 15,
-        stride: int = 21
+        nsteps: int = 16,
+        stride: int = 20
     ) -> None:
         """Plots the predicted x-velocity, y-velocity and pressure field contours
 
