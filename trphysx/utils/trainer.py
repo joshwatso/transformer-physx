@@ -243,9 +243,9 @@ class Trainer:
                 torch.save(optimizer.state_dict(), os.path.join(self.args.ckpt_dir, "optimizer{:d}.pt".format(epoch)))
                 torch.save(lr_scheduler.state_dict(), os.path.join(self.args.ckpt_dir, "scheduler{:d}.pt".format(epoch)))
 
-            if epoch % 25 == 0:
-                self.args.train_batch_size = self.args.train_batch_size + 6
-                logger.info(f"Changing batch size to {self.args.train_batch_size} at epoch {epoch}")
+            #if epoch % 25 == 0:
+                #self.args.train_batch_size = self.args.train_batch_size + 6
+                #logger.info(f"Changing batch size to {self.args.train_batch_size} at epoch {epoch}")
                 #logger.info(f"Current batch size after update: {training_loader.args.train_batch_size}")
 
 
