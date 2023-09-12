@@ -187,9 +187,10 @@ class Trainer:
         #new_batch_size = self.args.train_batch_size  # Initialize with the initial batch size
         
         # Loop over epochs
-        training_loader = self.get_train_dataloader()  # Initialize with the initial batch size
+
         for epoch in range(self.args.epoch_start + 1, self.args.epochs + 1):
-        
+            
+            training_loader = self.get_train_dataloader()  # Initialize with the initial batch size
             self.args.gradient_accumulation_steps = min([self.args.gradient_accumulation_steps, len(training_loader)])
         
             loss_total = 0.0
@@ -242,8 +243,8 @@ class Trainer:
                 torch.save(optimizer.state_dict(), os.path.join(self.args.ckpt_dir, "optimizer{:d}.pt".format(epoch)))
                 torch.save(lr_scheduler.state_dict(), os.path.join(self.args.ckpt_dir, "scheduler{:d}.pt".format(epoch)))
 
-            #if epoch % 25 == 0:
-                #self.args.train_batch_size = self.args.train_batch_size * 2
+            if epoch % 25 == 0:
+                self.args.train_batch_size = self.args.train_batch_size * 2
                 #logger.info(f"Changing batch size to {new_batch_size} at epoch {epoch}")
                 #logger.info(f"Current batch size after update: {training_loader.new_batch_size}")
 
