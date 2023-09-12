@@ -246,7 +246,7 @@ class Trainer:
             if epoch % 25 == 0:
                 self.args.train_batch_size = self.args.train_batch_size + 6
                 logger.info(f"Changing batch size to {self.args.train_batch_size} at epoch {epoch}")
-                #logger.info(f"Current batch size after update: {training_loader.train_batch_size}")
+                logger.info(f"Current batch size after update: {training_loader.args.train_batch_size}")
 
 
     
