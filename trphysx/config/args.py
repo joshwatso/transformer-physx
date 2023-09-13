@@ -108,7 +108,7 @@ class TrainingArguments:
         default=0, metadata={"help": "Epoch to start training at"}
     )
     epochs: int = field(
-        default=100, metadata={"help": "Number of epochs to train"}
+        default=150, metadata={"help": "Number of epochs to train"}
     )
 
     # ===== Optimization parameters =====
